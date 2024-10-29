@@ -1,1 +1,51 @@
 # simple-calendar
+# Check if a year is a leap year
+def is_leap_year(year):
+    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+
+# Function to get the number of days in a month
+def get_days_in_month(year, month):
+    if month == 2:  # February
+        return 29 if is_leap_year(year) else 28
+    elif month in {4, 6, 9, 11}:  # April, June, September, November
+        return 30
+    else:  # January, March, May, July, August, October, December
+        return 31
+
+# Function to find the weekday of the first day of the month
+def get_first_day_of_month(year, month):
+    # Using Zeller's Congruence algorithm for day calculation
+    if month < 3:
+        month += 12
+        year -= 1
+    k = year % 100
+    j = year // 100
+    day = (1 + (13 * (month + 1)) // 5 + k + (k // 4) + (j // 4) + 5 * j) % 7
+    return (day + 6) % 7  # Adjusted to make Sunday = 0, Monday = 1, ...
+
+# Display calendar for a given month and year
+def display_calendar(year, month):
+    days_in_month = get_days_in_month(year, month)
+    first_day = get_first_day_of_month(year, month)
+
+    # Print the header
+    print("Sun Mon Tue Wed Thu Fri Sat")
+
+    # Add spacing for the first day
+    print("    " * first_day, end="")
+
+    # Print the days of the month
+    for day in range(1, days_in_month + 1):
+        print(f"{day:3}", end=" ")
+        if (first_day + day) % 7 == 0:  # Newline after Saturday
+            print()
+
+# Get user input for year and month
+year = int(input("Enter year: "))
+month = int(input("Enter month (1-12): "))
+
+# Display the calendar
+if 1 <= month <= 12:
+    display_calendar(year, month)
+else:
+    print("Invalid month. Please enter a month between 1 and 12.")
